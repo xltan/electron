@@ -1871,10 +1871,7 @@ describe('webContents module', () => {
 
       it('respects custom settings', async () => {
         const data = await w.webContents.printToPDF({
-          pageRanges: {
-            from: 0,
-            to: 2
-          },
+          pageRanges: '1-3',
           landscape: true
         });
 
