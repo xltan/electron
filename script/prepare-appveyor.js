@@ -12,20 +12,20 @@ const APPVEYOR_IMAGES_URL = 'https://ci.appveyor.com/api/build-clouds';
 const APPVEYOR_JOB_URL = 'https://ci.appveyor.com/api/builds';
 const ROLLER_BRANCH_PATTERN = /^roller\/chromium$/;
 
-const DEFAULT_BUILD_CLOUD_ID = '1424';
-const DEFAULT_BUILD_CLOUD = 'electron-16-core2';
-const DEFAULT_BAKE_BASE_IMAGE = 'base-electron';
-const DEFAULT_BUILD_IMAGE = 'base-electron';
+// const DEFAULT_BUILD_CLOUD_ID = '1424';
+// const DEFAULT_BUILD_CLOUD = 'electron-16-core2';
+// const DEFAULT_BAKE_BASE_IMAGE = 'base-electron';
+// const DEFAULT_BUILD_IMAGE = 'base-electron';
 
 // const DEFAULT_BUILD_CLOUD_ID = '861';
 // const DEFAULT_BUILD_CLOUD = 'electron-16-core';
 // const DEFAULT_BAKE_BASE_IMAGE = 'vs2019bt-16.16.11';
 // const DEFAULT_BUILD_IMAGE = 'vs2019bt-16.16.11';
 
-// const DEFAULT_BUILD_CLOUD_ID = '1598';
-// const DEFAULT_BUILD_CLOUD = 'electronhq-16-core';
-// const DEFAULT_BAKE_BASE_IMAGE = 'Visual Studio 2019';
-// const DEFAULT_BUILD_IMAGE = 'Visual Studio 2019';
+const DEFAULT_BUILD_CLOUD_ID = '1598';
+const DEFAULT_BUILD_CLOUD = 'electronhq-16-core';
+const DEFAULT_BAKE_BASE_IMAGE = 'Windows_Default_Appveyor';
+const DEFAULT_BUILD_IMAGE = 'Windows_Default_Appveyor';
 
 const appveyorBakeJob = 'electron-bake-image';
 const appVeyorJobs = {
@@ -185,7 +185,7 @@ async function prepareAppVeyorImage (opts) {
     const [, CHROMIUM_VERSION] = versionRegex.exec(deps);
 
     const cloudId = opts.cloudId || DEFAULT_BUILD_CLOUD_ID;
-    const imageVersion = opts.imageVersion || `electron-test-${CHROMIUM_VERSION}`;
+    const imageVersion = opts.imageVersion || `electron-testing-${CHROMIUM_VERSION}`;
     const image = await checkAppVeyorImage({ cloudId, imageVersion });
 
     if (image && image.name) {

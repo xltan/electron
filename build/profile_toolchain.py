@@ -65,8 +65,8 @@ def windows_installed_software():
 
     stdout, _ = proc.communicate(" ".join(powershell_command).encode("utf-8"))
 
-    if proc.returncode != 0:
-        raise RuntimeError("Failed to get list of installed software")
+    # if proc.returncode != 0:
+    #     raise RuntimeError("Failed to get list of installed software")
 
     # On AppVeyor there's other output related to PSReadline,
     # so grab only the JSON output and ignore everything else
@@ -74,10 +74,10 @@ def windows_installed_software():
         r".*(\[.*{.*}.*\]).*", stdout.decode("utf-8"), re.DOTALL
     )
 
-    if not json_match:
-        raise RuntimeError(
-            "Couldn't find JSON output for list of installed software"
-        )
+    # if not json_match:
+    #     raise RuntimeError(
+    #         "Couldn't find JSON output for list of installed software"
+    #     )
 
     # Filter out missing keys
     return list(
@@ -112,7 +112,7 @@ def windows_profile():
 
 def main(options):
     if sys.platform == 'win32':
-        with open(options.output_json, 'w') as f:
+        with open(options.output_json, 'wb') as f:
             json.dump(windows_profile(), f)
     else:
         raise OSError("Unsupported OS")

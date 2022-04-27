@@ -26,8 +26,10 @@
 version: 1.0.{build}
 # build_cloud: electron-16-core
 # image: vs2019bt-16.16.11
-build_cloud: electron-16-core2
-image: base-electron
+# build_cloud: electron-16-core2
+# image: base-electron
+build_cloud: electronhq-16-core
+image: Windows_Default_Appveyor
 environment:
   GIT_CACHE_PATH: C:\Users\appveyor\libcc_cache
   ELECTRON_OUT_DIR: Default
@@ -61,7 +63,6 @@ build_script:
   - ps: git clone --depth=1 https://chromium.googlesource.com/chromium/tools/depot_tools.git  
   - ps: $env:PATH="$pwd\depot_tools;$env:PATH" 
   - ps: Move-Item $env:APPVEYOR_BUILD_FOLDER -Destination src\electron
-  - src\electron\script\setup-win-deps-for-dev.bat
   - ps: >-
       if (Test-Path 'env:RAW_GOMA_AUTH') {
         $env:GOMA_OAUTH2_CONFIG_FILE = "$pwd\.goma_oauth2_config"
@@ -121,7 +122,7 @@ build_script:
   - ninja -C out/Default electron:electron_chromedriver_zip
   - ninja -C out/Default third_party/electron_node:headers
   - python %LOCAL_GOMA_DIR%\goma_ctl.py stat
-  - python electron/build/profile_toolchain.py --output-json=out/Default/windows_toolchain_profile.json
+  # - python electron/build/profile_toolchain.py --output-json=out/Default/windows_toolchain_profile.json
   - 7z a node_headers.zip out\Default\gen\node_headers
   # Temporarily disable symbol generation on 32-bit Windows due to failures  
   - ps: >-

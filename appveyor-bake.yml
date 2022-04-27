@@ -21,8 +21,10 @@
 version: 1.0.{build}
 # build_cloud: electron-16-core
 # image: vs2019bt-16.16.11
-build_cloud: electron-16-core2
-image: base-electron
+# build_cloud: electron-16-core2
+# image: base-electron
+build_cloud: electronhq-16-core
+image: Windows_Default_Appveyor
 environment:
   GIT_CACHE_PATH: C:\Users\appveyor\libcc_cache
   ELECTRON_OUT_DIR: Default
