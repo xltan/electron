@@ -1,7 +1,7 @@
-From d49484c21e3c43b06dbe1274e94908559dc444a1 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jamie Madill <jmadill@chromium.org>
 Date: Mon, 11 Apr 2022 12:29:00 -0400
-Subject: [PATCH] [M100] Add error check on resuming XFB with deleted buffer.
+Subject: Add error check on resuming XFB with deleted buffer.
 
 Bug: chromium:1313905
 Change-Id: I22c6f6400b05ca32c922fba9a3b9d4b5841ca8b8
@@ -12,13 +12,12 @@ Commit-Queue: Jamie Madill <jmadill@chromium.org>
 (cherry picked from commit 5c85fd4e11a3835a0719223a7cedb978d309da21)
 Reviewed-on: https://chromium-review.googlesource.com/c/angle/angle/+/3594103
 Reviewed-by: Shahbaz Youssefi <syoussefi@chromium.org>
----
 
 diff --git a/src/libANGLE/validationES3.cpp b/src/libANGLE/validationES3.cpp
-index a1d300c..52b4816 100644
+index 1523cd5f0093b7b4b03bf0cd5432ee0a15f17dab..24a9d55a9af0ce3f65b805bc561623100273062a 100644
 --- a/src/libANGLE/validationES3.cpp
 +++ b/src/libANGLE/validationES3.cpp
-@@ -4291,6 +4291,13 @@
+@@ -4286,6 +4286,13 @@ bool ValidateUniformBlockBinding(const Context *context,
          return false;
      }
  
