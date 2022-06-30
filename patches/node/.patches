@@ -1,3 +1,4 @@
+det-add-jsc-support.patch
 refactor_alter_child_process_fork_to_use_execute_script_with.patch
 feat_initialize_asar_support.patch
 expose_get_builtin_module_function.patch

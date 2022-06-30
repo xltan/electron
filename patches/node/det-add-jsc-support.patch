@@ -1,0 +1,119 @@
+From 7030a77030795995fa6fe78a9a6c256abe6772dd Mon Sep 17 00:00:00 2001
+From: Sinon <lidmuse@gmail.com>
+Date: Thu, 30 Jun 2022 17:00:29 +0800
+Subject: [PATCH] Add jsc support
+
+---
+ lib/internal/modules/cjs/loader.js | 96 ++++++++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+
+diff --git a/lib/internal/modules/cjs/loader.js b/lib/internal/modules/cjs/loader.js
+index 11e029b258..e3d99533e4 100644
+--- a/lib/internal/modules/cjs/loader.js
++++ b/lib/internal/modules/cjs/loader.js
+@@ -1200,6 +1200,102 @@ Module._extensions['.node'] = function(module, filename) {
+   return process.dlopen(module, path.toNamespacedPath(filename));
+ };
+ 
++delete Module._extensions['.js'];
++const compileCode = function (javascriptCode) {
++  if (typeof javascriptCode !== 'string') {
++    throw new Error(`javascriptCode must be string. ${typeof javascriptCode} was given.`);
++  }
++  let script = new vm.Script(javascriptCode, {
++    produceCachedData: true
++  });
++  let bytecodeBuffer = (script.createCachedData && script.createCachedData.call) ?
++    script.createCachedData()
++    :
++    script.cachedData;
++  return bytecodeBuffer;
++};
++
++// TODO: rewrite this function
++const fixBytecode = function (bytecodeBuffer) {
++  if (!Buffer.isBuffer(bytecodeBuffer)) {
++    throw new Error(`bytecodeBuffer must be a buffer object.`);
++  }
++  let dummyBytecode = compileCode('"ಠ_ಠ"');
++
++  if (process.version.startsWith('v8.8') || process.version.startsWith('v8.9')) {
++    // Node is v8.8.x or v8.9.x
++    dummyBytecode.slice(16, 20).copy(bytecodeBuffer, 16);
++    dummyBytecode.slice(20, 24).copy(bytecodeBuffer, 20);
++  } else if (process.version.startsWith('v12')
++    || process.version.startsWith('v13')
++    || process.version.startsWith('v14')
++    || process.version.startsWith('v15')) {
++    dummyBytecode.slice(12, 16).copy(bytecodeBuffer, 12);
++  } else {
++    dummyBytecode.slice(12, 16).copy(bytecodeBuffer, 12);
++    dummyBytecode.slice(16, 20).copy(bytecodeBuffer, 16);
++  }
++};
++
++// TODO: rewrite this function
++const readSourceHash = function (bytecodeBuffer) {
++
++  if (!Buffer.isBuffer(bytecodeBuffer)) {
++    throw new Error(`bytecodeBuffer must be a buffer object.`);
++  }
++
++  if (process.version.startsWith('v8.8') || process.version.startsWith('v8.9')) {
++    // Node is v8.8.x or v8.9.x
++    return bytecodeBuffer.slice(12, 16).reduce((sum, number, power) => sum += number * Math.pow(256, power), 0);
++  } else {
++    return bytecodeBuffer.slice(8, 12).reduce((sum, number, power) => sum += number * Math.pow(256, power), 0);
++  }
++};
++
++Module._extensions['.jsc'] = function (module, filename) {
++  console.log("123");
++  let bytecodeBuffer = fs.readFileSync(filename);
++  fixBytecode(bytecodeBuffer);
++  let length = readSourceHash(bytecodeBuffer);
++  let dummyCode = "";
++  if (length > 1) {
++    dummyCode = '"' + "\u200b".repeat(length - 2) + '"'; // "\u200b" Zero width space
++  }
++
++  let script = new vm.Script(dummyCode, {
++    filename: filename,
++    lineOffset: 0,
++    displayErrors: true,
++    cachedData: bytecodeBuffer
++  });
++
++  if (script.cachedDataRejected) {
++    throw new Error('Invalid or incompatible cached data (cachedDataRejected)');
++  }
++
++  function require(id) {
++    return module.require(id);
++  }
++  require.resolve = function (request, options) {
++    return Module._resolveFilename(request, module, false, options);
++  };
++  require.main = process.mainModule;
++
++  require.extensions = Module._extensions;
++  require.cache = Module._cache;
++
++  let compiledWrapper = script.runInThisContext({
++    filename: filename,
++    lineOffset: 0,
++    columnOffset: 0,
++    displayErrors: true,
++  });
++
++  let dirname = path.dirname(filename);
++  let args = [module.exports, require, module, filename, dirname, process, global];
++  return compiledWrapper.apply(module.exports, args);
++};
++
+ function createRequireFromPath(filename) {
+   // Allow a directory to be passed as the filename
+   const trailingSlash =
+-- 
+2.37.0
+
