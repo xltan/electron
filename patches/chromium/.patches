@@ -1,3 +1,4 @@
+det-add-node-module-resolution.patch
 build_gn.patch
 dcheck.patch
 accelerator.patch

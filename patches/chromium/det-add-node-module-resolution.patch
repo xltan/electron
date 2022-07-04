@@ -1,0 +1,25 @@
+From f1278045b7f5f9b0b54cddd842b606e2b0339f03 Mon Sep 17 00:00:00 2001
+From: Sinon <lidmuse@gmail.com>
+Date: Mon, 4 Jul 2022 22:27:14 +0800
+Subject: [PATCH] add node-moduleresolution
+
+---
+ tools/typescript/tsconfig_definitions_base.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/typescript/tsconfig_definitions_base.json b/tools/typescript/tsconfig_definitions_base.json
+index 5787be425372b..c83669b042ab4 100644
+--- a/tools/typescript/tsconfig_definitions_base.json
++++ b/tools/typescript/tsconfig_definitions_base.json
+@@ -3,7 +3,7 @@
+     "module": "ESNext",
+     "target": "ESNext",
+     "noEmitOnError": true,
+-
++    "moduleResolution": "node",
+     "allowJs": true,
+     "declaration": true,
+     "emitDeclarationOnly": true,
+-- 
+2.37.0
+
